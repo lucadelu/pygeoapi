@@ -33,6 +33,7 @@ import logging
 import os
 
 import tinydb
+from tinyrecord import transaction
 
 from pygeoapi.process.manager.base import BaseManager
 from pygeoapi.util import JobStatus
@@ -103,7 +104,10 @@ class TinyDBManager(BaseManager):
         """
 
         self._connect()
-        doc_id = self.db.insert(job_metadata)
+        with transaction(self.db) as tr:
+            tr.insert(job_metadata)
+
+        doc_id = str(self.db.all()[-1].doc_id)
         self.db.close()
 
         return doc_id
@@ -119,7 +123,8 @@ class TinyDBManager(BaseManager):
         """
 
         self._connect()
-        self.db.update(update_dict, tinydb.where('identifier') == job_id)
+        with transaction(self.db) as tr:
+            tr.update(update_dict, tinydb.where('identifier') == job_id)
         self.db.close()
 
         return True
@@ -140,10 +145,15 @@ class TinyDBManager(BaseManager):
                 os.remove(location)
 
         self._connect()
-        removed = bool(self.db.remove(tinydb.where('identifier') == job_id))
+        query = tinydb.Query()
+        if not self.db.search(query.identifier == job_id):
+            return False
+
+        with transaction(self.db) as tr:
+            tr.remove(tinydb.where('identifier') == job_id)
         self.db.close()
 
-        return removed
+        return True
 
     def get_job(self, job_id):
         """

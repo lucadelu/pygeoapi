@@ -35,7 +35,7 @@ pygeoapi provides asynchronous support by providing a 'manager' concept which, w
 manages job execution.  The manager concept is implemented as part of the pygeoapi
 :ref:`plugins` architecture.  pygeoapi provides a default manager implementation
 based on `TinyDB`_ for simplicity.  Custom manager plugins can be developed for more
-advanced job management capabilities (e.g. Kubernetes, databases, etc.).
+advanced job management capabilities (e.g. Kubernetes, databases, transactions, etc.).
 
 
 .. code-block:: yaml

@@ -9,6 +9,7 @@ PyYAML
 rasterio
 shapely
 tinydb
+tinyrecord
 unicodecsv
 future-annotations
 pydantic

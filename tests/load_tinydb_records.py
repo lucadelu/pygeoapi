@@ -35,6 +35,7 @@ import sys
 from lxml import etree
 from owslib.iso import MD_Metadata
 from tinydb import TinyDB
+from tinyrecord import transaction
 
 
 if len(sys.argv) < 3:
@@ -179,8 +180,9 @@ for xml_file in glob('{}/*.xml'.format(xml_dir)):
     }
 
     try:
-        res = db.insert(json_record)
-        print('Metadata record {} loaded with internal id {}'.format(
-            xml_file, res))
+        with transaction(db) as tr:
+            res = tr.insert(json_record)
+            print('Metadata record {} loaded with internal id {}'.format(
+                xml_file, res))
     except Exception as err:
         print(err)
