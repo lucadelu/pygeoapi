@@ -1524,7 +1524,7 @@ class API:
             # the path_info and the filename.
             path_info = '/'.join([
                 self.config['server']['url'].rstrip('/'),
-                request.path_info])
+                request.path_info.strip('/')])
 
             content['items_path'] = path_info
             content['dataset_path'] = '/'.join(path_info.split('/')[:-1])
